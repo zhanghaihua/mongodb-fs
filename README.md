@@ -70,6 +70,9 @@ mongodbFs.start(function (err) {
 
 ```
 
+For a more complete example : have a look at the
+[unit test](https://github.com/openhoat/mongodb-fs/tree/master/test/testMongoDbFs.js)
+
 ## Limitations
 
 Supported operations : all queries, update, remove, insert
