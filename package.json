@@ -1,0 +1,36 @@
+{
+  "name": "mongodb-fs",
+  "version": "0.0.1",
+  "description": "Mongo DB Fake Server",
+  "homepage": "https://github.com/openhoat/mongodb-fs",
+  "main": "lib/mongodb-fs.js",
+  "author": {
+    "name": "Olivier Penhoat",
+    "email": "openhoat@gmail.com"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/openhoat/mongodb-fs.git"
+  },
+  "bugs": {
+    "url": "https://github.com/openhoat/mongodb-fs/issues"
+  },
+  "licenses": [
+    {
+      "type": "EUPL",
+      "url": "https://github.com/openhoat/mongodb-fs/blob/master/EUPL-1.1.txt"
+    }
+  ],
+  "engines": {
+    "node": "*"
+  },
+  "dependencies": {
+    "bson": "0.1.9"
+  },
+  "devDependencies": {
+    "nodeunit": "0.8.0",
+    "profess": "0.0.4",
+    "mongoose": "3.6.11",
+    "colors": "0.6.0-1"
+  }
+}
