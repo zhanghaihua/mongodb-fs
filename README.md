@@ -1,10 +1,12 @@
 ## What's mongodb-fs?
 
-  mongodb-fs is a fake mongodb server for nodejs (fs stands for 'Fake Server', or 'File System').
+  mongodb-fs is a fake, lightweight, seamlessly mongodb server for nodejs (fs stands for 'Fake Server', or 'File System').
 
-  Its goal is to act as a normal mongodb server, but with a json file instead of a database.
+  Its goal is to act as a normal mongodb server, but with a simple json file instead of a database.
 
   Because it's not so simple to work with mocks on the client side, this solution gives you mocks on the server side.
+
+  mongodb-fs can nicely replace a real mongodb server for unit tests phase.
 
   All you have to do is to provide a mocks module when you start the db server, and go on with your client code.
 
@@ -50,8 +52,11 @@ mongodbFs.init({
   // fork is useful to deal with async hell (client and server in same main-loop)
 });
 
+// Start the fake server
 mongodbFs.start(function (err) {
-  mongoose.connect('mongodb://localhost:27027/fakedb', { server: { poolSize: 1 } }, function (err) {
+  mongoose.connect('mongodb://localhost:27027/fakedb', // 'fakedb' should be available in mocks
+    { server: { poolSize: 1 } }, // usual options
+    function (err) {
     // Usual mongoose code to retreive all the contacts
     var Contact;
     Contact = mongoose.connection.model('Contact');
