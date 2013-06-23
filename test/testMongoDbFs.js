@@ -226,14 +226,14 @@ exports.testCrud = function (test) {
 };
 
 // disabled tests :
-delete exports.testCrud;
 delete exports.testFindAll;
 delete exports.testFindFilter1;
+delete exports.testFindFilter2;
 delete exports.testInsert;
 delete exports.testRemove;
 
 /*
- delete exports.testFindFilter2;
+ delete exports.testCrud;
  */
 
 module.exports = exports;
