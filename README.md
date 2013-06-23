@@ -1,9 +1,11 @@
 ## What's mongodb-fs?
 
-  fs stands for 'Fake Server', or 'File System'.
-  mongodb-fs is a lightweight mongodb server for nodejs.
+  mongodb-fs is a lightweight mongodb server for nodejs (fs stands for 'Fake Server', or 'File System').
+
   Its goal is to act as a normal mongodb server, but with a json file instead of a database.
+
   Because it's not so simple to work with mocks on the client side, this solution give you mocks on the server side.
+
   All you have to do is to provide a mocks module when you start the db server.
 
 ## Installation
