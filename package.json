@@ -1,7 +1,8 @@
 {
   "name": "mongodb-fs",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "description": "Mongo DB Fake Server",
+  "keywords": ["mongodb", "mongo", "driver", "db", "mock", "test"],
   "homepage": "https://github.com/openhoat/mongodb-fs",
   "main": "lib/mongodb-fs.js",
   "author": {
