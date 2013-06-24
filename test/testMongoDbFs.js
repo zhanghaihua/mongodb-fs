@@ -22,7 +22,8 @@ schema = {
   field2: {
     field3: Number,
     field4: String
-  }
+  },
+  field5: Array
 };
 
 dbConfig = {
@@ -173,7 +174,8 @@ exports.testInsert = function (test) {
     field2: {
       field3: 1031,
       field4: 'value104'
-    }
+    },
+    field5: ['h', 'i', 'j']
   });
   item.save(function (err, savedItem) {
     test.ifError(err);
@@ -183,18 +185,31 @@ exports.testInsert = function (test) {
 };
 
 exports.testFindFilters = {
-  test1: function (test) {
+  'test $all': function (test) {
+    Item.find({ 'field5': { $all: ['a', 'c'] } }, function (err, items) {
+      test.ifError(err);
+      test.ok(items);
+      test.equal(items.length, 1);
+      if (items.length === 3) {
+        test.equal(items[0].field5.indexOf('a'), 0);
+        test.equal(items[0].field5.indexOf('b'), 1);
+        test.equal(items[0].field5.indexOf('c'), 2);
+      }
+      test.done();
+    });
+  },
+  'test $gt': function (test) {
     Item.find({ 'field2.field3': { $gt: 32 } }, function (err, items) {
       test.ifError(err);
       test.ok(items);
       test.equal(items.length, 1);
-      if (items.length) {
+      if (items.length === 1) {
         test.equal(items[0].field2.field3, 33);
       }
       test.done();
     });
   },
-  test2: function (test) {
+  'test $gte': function (test) {
     Item.find({ 'field2.field3': { $gte: 32 } }, function (err, items) {
       test.ifError(err);
       test.ok(items);
@@ -202,15 +217,61 @@ exports.testFindFilters = {
       test.done();
     });
   },
-  test3: function (test) {
-    Item.find({ 'field2.field4': { $ne: 'value24' } }, function (err, items) {
+  'test $in': function (test) {
+    Item.find({ 'field2.field3': { $in: [32, 33] } }, function (err, items) {
+      test.ifError(err);
+      test.ok(items);
+      test.equal(items.length, 2);
+      if (items.length === 2) {
+        test.equal(items[0].field2.field3, 32);
+        test.equal(items[1].field2.field3, 33);
+      }
+      test.done();
+    });
+  },
+  'test $lt': function (test) {
+    Item.find({ 'field2.field3': { $lt: 32 } }, function (err, items) {
+      test.ifError(err);
+      test.ok(items);
+      test.equal(items.length, 1);
+      if (items.length === 1) {
+        test.equal(items[0].field2.field3, 31);
+      }
+      test.done();
+    });
+  },
+  'test $lte': function (test) {
+    Item.find({ 'field2.field3': { $gte: 32 } }, function (err, items) {
       test.ifError(err);
       test.ok(items);
       test.equal(items.length, 2);
       test.done();
     });
   },
-  test4: function (test) {
+  'test $ne': function (test) {
+    Item.find({ 'field2.field3': { $ne: 32 } }, function (err, items) {
+      test.ifError(err);
+      test.ok(items);
+      test.equal(items.length, 2);
+      if (items.length === 2) {
+        test.equal(items[0].field2.field3, 31);
+        test.equal(items[1].field2.field3, 33);
+      }
+      test.done();
+    });
+  },
+  'test $nin': function (test) {
+    Item.find({ 'field2.field3': { $nin: [32, 33] } }, function (err, items) {
+      test.ifError(err);
+      test.ok(items);
+      test.equal(items.length, 1);
+      if (items.length === 1) {
+        test.equal(items[0].field2.field3, 31);
+      }
+      test.done();
+    });
+  },
+  'test simple filter': function (test) {
     Item.find({ 'field2.field3': 32 }, function (err, items) {
       test.ifError(err);
       test.ok(items);
@@ -221,7 +282,7 @@ exports.testFindFilters = {
       test.done();
     });
   },
-  test5: function (test) {
+  'test string filter': function (test) {
     Item.find({ 'field2.field4': 'value24' }, function (err, items) {
       test.ifError(err);
       test.ok(items);
