@@ -6,7 +6,7 @@ var util = require('util')
   , Profess = require('profess')
   , helper = require('../lib/helper')
   , log = helper.log
-  , config, schema, dbConfig, dbOptions;
+  , config, schema, dbConfig, dbOptions, Item;
 
 config = {
   port: 27027,
@@ -57,6 +57,11 @@ exports.setUp = function (callback) {
     then(function () {
       log('trace', 'connect to db');
       mongoose.connect(dbConfig.url, dbOptions, profess.next);
+      //test.ok(mongoose.connection.readyState);
+    }).
+    then(function () {
+      Item = mongoose.connection.model('Item');
+      profess.next();
     }).
     then(callback);
 };
@@ -67,11 +72,7 @@ exports.tearDown = function (callback) {
 };
 
 exports.testFindAll = function (test) {
-  var Item;
   log('trace', 'testFindAll');
-  test.ok(mongoose.connection.readyState);
-  Item = mongoose.connection.model('Item');
-  test.ok(Item);
   Item.find(function (err, items) {
     test.ifError(err);
     test.ok(items);
@@ -80,66 +81,8 @@ exports.testFindAll = function (test) {
   });
 };
 
-exports.testFindFilter1 = function (test) {
-  var Item;
-  log('trace', 'testFindFilter1');
-  test.ok(mongoose.connection.readyState);
-  Item = mongoose.connection.model('Item');
-  test.ok(Item);
-  Item.find({ 'field2.field3': { $gt: 32 } }, function (err, items) {
-    test.ifError(err);
-    test.ok(items);
-    test.equal(items.length, 1);
-    if (items.length) {
-      test.equal(items[0].field2.field3, 33);
-    }
-    test.done();
-  });
-};
-
-exports.testFindFilter2 = function (test) {
-  var Item;
-  log('trace', 'testFindFilter2');
-  test.ok(mongoose.connection.readyState);
-  Item = mongoose.connection.model('Item');
-  test.ok(Item);
-  Item.find({ 'field2.field3': { $gt: 32 } }, function (err, items) {
-    test.ifError(err);
-    test.ok(items);
-    test.equal(items.length, 1);
-    if (items.length) {
-      test.equal(items[0].field2.field3, 33);
-    }
-    test.done();
-  });
-};
-
-exports.testInsert = function (test) {
-  var Item, item;
-  log('trace', 'testInsert');
-  test.ok(mongoose.connection.readyState);
-  Item = mongoose.connection.model('Item');
-  test.ok(Item);
-  item = new Item({
-    field1: 'value101',
-    field2: {
-      field3: 1031,
-      field4: 'value104'
-    }
-  });
-  item.save(function (err, savedItem) {
-    test.ifError(err);
-    test.ok(savedItem);
-    test.done();
-  });
-};
-
 exports.testRemove = function (test) {
-  var Item;
   log('trace', 'testRemove');
-  test.ok(mongoose.connection.readyState);
-  Item = mongoose.connection.model('Item');
-  test.ok(Item);
   Item.findOne({ 'field1': 'value101' }, function (err, item) {
     log('item :', item);
     test.ifError(err);
@@ -152,10 +95,7 @@ exports.testRemove = function (test) {
 };
 
 exports.testCrud = function (test) {
-  var Item, profess, noItems, errorHandler, item;
-  test.ok(mongoose.connection.readyState);
-  Item = mongoose.connection.model('Item');
-  test.ok(Item);
+  var profess, noItems, errorHandler, item;
   profess = new Profess();
   errorHandler = profess.handleError(function (err) {
     test.ifError(err);
@@ -225,15 +165,83 @@ exports.testCrud = function (test) {
     });
 };
 
+exports.testInsert = function (test) {
+  var item;
+  log('trace', 'testInsert');
+  item = new Item({
+    field1: 'value101',
+    field2: {
+      field3: 1031,
+      field4: 'value104'
+    }
+  });
+  item.save(function (err, savedItem) {
+    test.ifError(err);
+    test.ok(savedItem);
+    test.done();
+  });
+};
+
+exports.testFindFilters = {
+  test1: function (test) {
+    Item.find({ 'field2.field3': { $gt: 32 } }, function (err, items) {
+      test.ifError(err);
+      test.ok(items);
+      test.equal(items.length, 1);
+      if (items.length) {
+        test.equal(items[0].field2.field3, 33);
+      }
+      test.done();
+    });
+  },
+  test2: function (test) {
+    Item.find({ 'field2.field3': { $gte: 32 } }, function (err, items) {
+      test.ifError(err);
+      test.ok(items);
+      test.equal(items.length, 2);
+      test.done();
+    });
+  },
+  test3: function (test) {
+    Item.find({ 'field2.field4': { $ne: 'value24' } }, function (err, items) {
+      test.ifError(err);
+      test.ok(items);
+      test.equal(items.length, 2);
+      test.done();
+    });
+  },
+  test4: function (test) {
+    Item.find({ 'field2.field3': 32 }, function (err, items) {
+      test.ifError(err);
+      test.ok(items);
+      test.equal(items.length, 1);
+      if (items.length) {
+        test.equal(items[0].field2.field3, 32);
+      }
+      test.done();
+    });
+  },
+  test5: function (test) {
+    Item.find({ 'field2.field4': 'value24' }, function (err, items) {
+      test.ifError(err);
+      test.ok(items);
+      test.equal(items.length, 1);
+      if (items.length) {
+        test.equal(items[0].field2.field4, 'value24');
+      }
+      test.done();
+    });
+  }
+};
+
 // disabled tests :
 delete exports.testFindAll;
-delete exports.testFindFilter1;
-delete exports.testFindFilter2;
 delete exports.testInsert;
 delete exports.testRemove;
+delete exports.testCrud;
 
 /*
- delete exports.testCrud;
+ delete exports.testFindFilters;
  */
 
 module.exports = exports;
