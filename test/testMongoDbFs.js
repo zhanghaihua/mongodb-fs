@@ -84,7 +84,7 @@ exports.testFindAll = function (test) {
 
 exports.testRemove = function (test) {
   log('trace', 'testRemove');
-  Item.findOne({ 'field1': 'value101' }, function (err, item) {
+  Item.findOne({ 'field1': 'value11' }, function (err, item) {
     log('item :', item);
     test.ifError(err);
     test.ok(item);
@@ -270,7 +270,22 @@ exports.testFindFilters = {
       }
       test.done();
     });
-  },
+  }/*,
+   'test $or': function (test) {
+   Item.find({ $or: [
+   { field1: 'value1' },
+   { 'field2.field3': 32 }
+   ]}, function (err, items) {
+   test.ifError(err);
+   test.ok(items);
+   test.equal(items.length, 2);
+   if (items.length === 2) {
+   test.equal(items[0].field1, 'value1');
+   test.equal(items[0].field2.field3, 32);
+   }
+   test.done();
+   });
+   }*/,
   'test simple filter': function (test) {
     Item.find({ 'field2.field3': 32 }, function (err, items) {
       test.ifError(err);
@@ -278,6 +293,18 @@ exports.testFindFilters = {
       test.equal(items.length, 1);
       if (items.length) {
         test.equal(items[0].field2.field3, 32);
+      }
+      test.done();
+    });
+  },
+  'test 2 fields filter': function (test) {
+    Item.find({ field1: 'value1', 'field2.field3': 31 }, function (err, items) {
+      test.ifError(err);
+      test.ok(items);
+      test.equal(items.length, 1);
+      if (items.length) {
+        test.equal(items[0].field1, 'value1');
+        test.equal(items[0].field2.field3, 31);
       }
       test.done();
     });
