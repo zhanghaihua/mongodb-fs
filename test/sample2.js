@@ -30,7 +30,7 @@ mongodbFs.start(function (err) {
     myModel.save(function (err) {
       MyModel.find(function (err, myModels) {
         console.log('myModels :', myModels);
-        mongoose.disconnect(function (err) { // clean death
+        con.close(function (err) { // clean death
           mongodbFs.stop(function (err) {
             console.log('bye!');
           });
