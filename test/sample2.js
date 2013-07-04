@@ -20,9 +20,9 @@ mongodbFs.init({
 });
 
 mongodbFs.start(function (err) {
-  mongoose.connect('mongodb://localhost:27027/fakedb', { server: { poolSize: 1 } }, function (err) {
+  con = mongoose.createConnection('mongodb://localhost:27027/fakedb', { server: { poolSize: 1 } }, function (err) {
     var MyModel, myModel;
-    MyModel = mongoose.connection.model('MyModel');
+    MyModel = con.model('MyModel');
     myModel = new MyModel({
       a: 'avalue',
       b: 'bvalue'
