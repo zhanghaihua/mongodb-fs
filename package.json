@@ -1,6 +1,6 @@
 {
   "name": "mongodb-fs",
-  "version": "0.0.5",
+  "version": "0.0.6",
   "description": "Mongo DB Fake Server",
   "keywords": ["mongodb", "mongo", "driver", "db", "mock", "test"],
   "homepage": "https://github.com/openhoat/mongodb-fs",
@@ -27,7 +27,7 @@
   },
   "dependencies": {
     "bson": "0.1.9",
-    "color": "0.4.4"
+    "colors": "0.6.0-1"
   },
   "devDependencies": {
     "nodeunit": "0.8.0",
