@@ -1,21 +1,32 @@
 var util = require('util')
+  , path = require('path')
   , nodeunit = require('nodeunit')
+  , log = require('../lib/log')
   , helper = require('../lib/helper')
-  , log = helper.log
-  , filter = require('../lib/filter');
+  , filter = require('../lib/filter')
+  , logger;
 
-exports.setUp = function (callback) {
-  helper.init({
-    logLevel: 'debug',
-    verbose: true,
-    colors: true
-  });
-  callback();
-};
+log.init({
+  log4js: {
+    appenders: [
+      {
+        type: 'console',
+        category: path.basename(__filename)
+      }
+    ]
+  },
+  logger: {
+    category: path.basename(__filename),
+    level: 'INFO'
+  }
+});
+logger = log.getLogger();
+filter.init();
+
 function testSelector(test, selector, expectedResult) {
   var rootNode;
   rootNode = filter.buildOpNode(selector);
-  log('debug', 'rootNode :', util.inspect(rootNode, {depth: null}));
+  logger.debug('rootNode :', util.inspect(rootNode, {depth: null}));
   test.ok(rootNode);
   test.equal(JSON.stringify(rootNode), JSON.stringify(expectedResult));
   test.done();

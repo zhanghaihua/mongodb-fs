@@ -1,21 +1,33 @@
 var util = require('util')
+  , path = require('path')
   , nodeunit = require('nodeunit')
   , mongodbFs = require('../lib/mongodb-fs')
   , mongoose = require('mongoose')
-  , path = require('path')
   , Profess = require('profess')
+  , log = require('../lib/log')
   , helper = require('../lib/helper')
-  , log = helper.log
-  , config, schema, dbConfig, dbOptions, Item;
+  , config, logger, schema, dbConfig, dbOptions, Item;
 
 config = {
   port: 27027,
   mocks: require('./mocks'),
-  logLevel: 'debug',
-  verbose: true,
-  colors: true,
-  fork: true
+  fork: true,
+  log4js: {
+    appenders: [
+      {
+        type: 'console',
+        category: path.basename(__filename)
+      }
+    ]
+  },
+  logger: {
+    category: path.basename(__filename),
+    level: 'INFO'
+  }
 };
+
+log.init(config);
+logger = log.getLogger();
 
 schema = {
   field1: String,
@@ -42,11 +54,10 @@ exports.setUp = function (callback) {
   profess = new Profess();
   profess.
     do(function () {
-      helper.init(config);
       //return profess.next();
       if (!mongodbFs.isRunning()) {
         mongodbFs.init(config);
-        log('trace', 'init');
+        logger.trace('init');
         mongodbFs.start(profess.next);
         nodeunit.on('complete', function () {
           mongodbFs.stop();
@@ -56,7 +67,7 @@ exports.setUp = function (callback) {
       }
     }).
     then(function () {
-      log('trace', 'connect to db');
+      logger.trace('connect to db');
       mongoose.connect(dbConfig.url, dbOptions, profess.next);
       //test.ok(mongoose.connection.readyState);
     }).
@@ -68,12 +79,12 @@ exports.setUp = function (callback) {
 };
 
 exports.tearDown = function (callback) {
-  log('trace', 'disconnect');
+  logger.trace('disconnect');
   mongoose.disconnect(callback);
 };
 
 exports.testFindAll = function (test) {
-  log('trace', 'testFindAll');
+  logger.trace('testFindAll');
   Item.find(function (err, items) {
     test.ifError(err);
     test.ok(items);
@@ -83,9 +94,9 @@ exports.testFindAll = function (test) {
 };
 
 exports.testRemove = function (test) {
-  log('trace', 'testRemove');
+  logger.trace('testRemove');
   Item.findOne({ 'field1': 'value11' }, function (err, item) {
-    log('item :', item);
+    logger.info('item :', item);
     test.ifError(err);
     test.ok(item);
     item.remove(function (err) {
@@ -168,7 +179,7 @@ exports.testCrud = function (test) {
 
 exports.testInsert = function (test) {
   var item;
-  log('trace', 'testInsert');
+  logger.trace('testInsert');
   item = new Item({
     field1: 'value101',
     field2: {

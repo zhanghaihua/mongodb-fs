@@ -1,4 +1,5 @@
-var mongoose = require('mongoose')
+var path = require('path')
+  , mongoose = require('mongoose')
   , mongodbFs = require('../lib/mongodb-fs');
 
 mongoose.model('MyModel', {
@@ -13,10 +14,11 @@ mongodbFs.init({
       mymodels: []
     }
   },
-  verbose: true,
-  logLevel: 'error',
-  colors: true,
-  fork: true
+  fork: true,
+  logger: {
+    category: path.basename(__filename),
+    level: 'INFO'
+  }
 });
 
 mongodbFs.start(function (err) {

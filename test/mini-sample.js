@@ -1,4 +1,5 @@
-var mongoose = require('mongoose')
+var path = require('path')
+  , mongoose = require('mongoose')
   , mongodbFs = require('../lib/mongodb-fs');
 
 // Usual mongoose code to define a schema for contact entities
@@ -25,11 +26,20 @@ mongodbFs.init({
     }
   },
   // Additionnal options
-  verbose: true,      // enable logging (default: false)
-  logLevel: 'error',  // log level (default: info)
-  colors: true,       // colors in logs (default: false)
-  fork: true          // force the server to run in a separate process (default: false)
+  fork: true,         // force the server to run in a separate process (default: false)
   // fork is useful to deal with async hell (client and server in same main-loop)
+  log4js: {           // log4js configuration
+    appenders: [
+      {
+        type: 'console',
+        category: path.basename(__filename)
+      }
+    ]
+  },
+  logger: {           // logger configuration
+    category: path.basename(__filename),
+    level: 'INFO'
+  }
 });
 
 mongodbFs.start(function (err) {

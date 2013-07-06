@@ -1,18 +1,27 @@
-var util = require('util')
+var path = require('path')
   , nodeunit = require('nodeunit')
+  , log = require('../lib/log')
   , helper = require('../lib/helper')
-  , log = helper.log
   , filter = require('../lib/filter')
-  , mocks = require('./mocks');
+  , mocks = require('./mocks')
+  , logger;
 
-exports.setUp = function (callback) {
-  helper.init({
-    logLevel: 'debug',
-    verbose: true,
-    colors: true
-  });
-  callback();
-};
+log.init({
+  log4js: {
+    appenders: [
+      {
+        type: 'console',
+        category: path.basename(__filename)
+      }
+    ]
+  },
+  logger: {
+    category: path.basename(__filename),
+    level: 'INFO'
+  }
+});
+logger = log.getLogger();
+filter.init();
 
 function test1(test) {
   var items;
@@ -20,7 +29,7 @@ function test1(test) {
     field1: 'value1',
     'field2.field3': 31
   });
-  log('debug', 'items :', items);
+  logger.debug('items :', items);
   test.ok(items);
   test.equal(items.length, 1);
   test.done();
@@ -34,7 +43,7 @@ function test2(test) {
       {'field2.field3': 32}
     ]
   });
-  log('debug', 'items :', items);
+  logger.debug('items :', items);
   test.ok(items);
   test.equal(items.length, 2);
   test.done();
@@ -46,7 +55,7 @@ function test3(test) {
     field1: { '$in': ['value1', 'value21'] },
     'field2.field3': { $ne: 32 }
   });
-  log('debug', 'items :', items);
+  logger.debug('items :', items);
   test.ok(items);
   test.equal(items.length, 2);
   test.done();
@@ -58,7 +67,7 @@ function test4(test) {
     field5: { '$all': ['a', 'b'] },
     'field2.field3': { '$gt': 31 }
   });
-  log('debug', 'items :', items);
+  logger.debug('items :', items);
   test.ok(items);
   test.equal(items.length, 1);
   test.done();
@@ -69,7 +78,7 @@ function test5(test) {
   items = filter.filterItems(mocks.fakedb.items, {
     'field2.field3': { $not: { $gt: 32 } }
   });
-  log('debug', 'items :', items);
+  logger.debug('items :', items);
   test.ok(items);
   test.equal(items.length, 2);
   test.done();
