@@ -15,10 +15,8 @@ log.init({
       }
     ]
   },
-  logger: {
-    category: path.basename(__filename),
-    level: 'INFO'
-  }
+  category: path.basename(__filename),
+  level: 'TRACE'
 });
 logger = log.getLogger();
 filter.init();

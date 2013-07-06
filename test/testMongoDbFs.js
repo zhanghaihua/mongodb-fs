@@ -12,21 +12,21 @@ config = {
   port: 27027,
   mocks: require('./mocks'),
   fork: true,
-  log4js: {
-    appenders: [
-      {
-        type: 'console',
-        category: path.basename(__filename)
-      }
-    ]
-  },
-  logger: {
+  log: {
+    log4js: {
+      appenders: [
+        {
+          type: 'console',
+          category: path.basename(__filename)
+        }
+      ]
+    },
     category: path.basename(__filename),
-    level: 'INFO'
+    level: 'TRACE'
   }
 };
 
-log.init(config);
+log.init(config.log);
 logger = log.getLogger();
 
 schema = {

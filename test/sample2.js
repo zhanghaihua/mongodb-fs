@@ -15,9 +15,9 @@ mongodbFs.init({
     }
   },
   fork: true,
-  logger: {
+  log: {
     category: path.basename(__filename),
-    level: 'INFO'
+    level: 'TRACE'
   }
 });
 

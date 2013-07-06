@@ -28,17 +28,19 @@ mongodbFs.init({
   // Additionnal options
   fork: true,         // force the server to run in a separate process (default: false)
   // fork is useful to deal with async hell (client and server in same main-loop)
-  log4js: {           // log4js configuration
-    appenders: [
-      {
-        type: 'console',
-        category: path.basename(__filename)
-      }
-    ]
-  },
-  logger: {           // logger configuration
-    category: path.basename(__filename),
-    level: 'INFO'
+  //
+  // Log optionnal configuration :
+  log: {
+    log4js: {         // log4js configuration
+      appenders: [    // log4js appenders declaration (see log4js project for more informations)
+        {
+          type: 'console',
+          category: path.basename(__filename)
+        }
+      ]
+    },
+    category: path.basename(__filename), // category used for logger
+    level: 'INFO'                        // log level
   }
 });
 
