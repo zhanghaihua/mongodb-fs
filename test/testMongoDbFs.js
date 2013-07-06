@@ -6,7 +6,7 @@ var util = require('util')
   , Profess = require('profess')
   , log = require('../lib/log')
   , helper = require('../lib/helper')
-  , config, logger, schema, dbConfig, dbOptions, Item;
+  , config, logger, schema, dbConfig, dbOptions, Item, Unknown;
 
 config = {
   port: 27027,
@@ -48,6 +48,7 @@ dbOptions = {
 };
 
 mongoose.model('Item', schema);
+mongoose.model('Unknown', { name: String });
 
 exports.setUp = function (callback) {
   var profess;
@@ -73,6 +74,7 @@ exports.setUp = function (callback) {
     }).
     then(function () {
       Item = mongoose.connection.model('Item');
+      Unknown = mongoose.connection.model('Unknown');
       profess.next();
     }).
     then(callback);
@@ -89,6 +91,15 @@ exports.testFindAll = function (test) {
     test.ifError(err);
     test.ok(items);
     test.equal(items.length, 3);
+    test.done();
+  });
+};
+
+exports.testFindUnknown = function (test) {
+  logger.trace('testFindUnknown');
+  Unknown.find(function (err, items) {
+    test.ok(err);
+    test.equal(err.name, 'MongoError');
     test.done();
   });
 };
