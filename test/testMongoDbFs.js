@@ -98,8 +98,8 @@ exports.testFindAll = function (test) {
 exports.testFindUnknown = function (test) {
   logger.trace('testFindUnknown');
   Unknown.find(function (err, items) {
-    test.ok(err);
-    test.equal(err.name, 'MongoError');
+    test.ifError(err);
+    test.equal(items.length, 0);
     test.done();
   });
 };
